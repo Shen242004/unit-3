@@ -1,0 +1,39 @@
+def subset_sum_closest(arr, target):
+    n = len(arr)
+    half = n // 2
+    left_half = arr[:half]
+    right_half = arr[half:]
+
+    left_sums = {0}
+    right_sums = {0}
+
+    for i in range(1, 1 << len(left_half)):
+        left_sums.add(sum(left_half[j] for j in range(len(left_half)) if i & (1 << j)))
+
+    for i in range(1, 1 << len(right_half)):
+        right_sums.add(sum(right_half[j] for j in range(len(right_half)) if i & (1 << j)))
+
+    right_sums = sorted(right_sums)
+
+    closest_sum = float('inf')
+    closest_subset = None
+
+    for left_sum in left_sums:
+        right_idx = bisect_left(right_sums, target - left_sum)
+        for j in [right_idx - 1, right_idx, right_idx + 1]:
+            if 0 <= j < len(right_sums):
+                total = left_sum + right_sums[j]
+                if abs(target - total) < abs(target - closest_sum):
+                    closest_sum = total
+                    closest_subset = (left_sum, right_sums[j])
+
+    return closest_subset
+
+# Test Cases
+set1 = [45, 34, 4, 12, 5, 2]
+target_sum1 = 42
+print("Closest Subset for set1:", subset_sum_closest(set1, target_sum1))
+
+set2 = [1, 3, 2, 7, 4, 6]
+target_sum2 = 10
+print("Closest Subset for set2:", subset_sum_closest(set2, target_sum2))
