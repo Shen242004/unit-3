@@ -1,0 +1,32 @@
+def binary_search(arr, target):
+    left, right = 0, len(arr) - 1
+    comparisons = 0
+
+    while left <= right:
+        mid = left + (right - left) // 2
+        comparisons += 1
+
+        if arr[mid] == target:
+            return mid, comparisons
+        elif arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+
+    return -1, comparisons
+
+# Test the binary search algorithm
+arr1 = [5, 10, 15, 20, 25, 30, 35, 40, 45]
+target1 = 20
+index1, comparisons1 = binary_search(arr1, target1)
+print(f"Index of {target1} in arr1: {index1}, Comparisons: {comparisons1}")
+
+arr2 = [10, 20, 30, 40, 50, 60]
+target2 = 50
+index2, comparisons2 = binary_search(arr2, target2)
+print(f"Index of {target2} in arr2: {index2}, Comparisons: {comparisons2}")
+
+arr3 = [21, 32, 40, 54, 65, 76, 87]
+target3 = 32
+index3, comparisons3 = binary_search(arr3, target3)
+print(f"Index of {target3} in arr3: {index3}, Comparisons: {comparisons3}")
