@@ -1,0 +1,53 @@
+def median_of_medians(arr, k):
+    if arr and 0 < k <= len(arr):
+        def partition(arr, left, right, pivot_index):
+            pivot_value = arr[pivot_index]
+            arr[pivot_index], arr[right] = arr[right], arr[pivot_index]
+            store_index = left
+            for i in range(left, right):
+                if arr[i] < pivot_value:
+                    arr[store_index], arr[i] = arr[i], arr[store_index]
+                    store_index += 1
+            arr[right], arr[store_index] = arr[store_index], arr[right]
+            return store_index
+
+        def select(arr, left, right, k):
+            if left == right:
+                return arr[left]
+            pivot_index = left
+            while True:
+                pivot_index = partition(arr, left, right, pivot_index)
+                if k == pivot_index:
+                    return arr[k]
+                elif k < pivot_index:
+                    right = pivot_index - 1
+                else:
+                    left = pivot_index + 1
+
+        n = len(arr)
+        groups = [arr[i:i + 5] for i in range(0, n, 5)]
+        medians = [sorted(group)[len(group) // 2] for group in groups]
+        pivot = select(medians, 0, len(medians) - 1, len(medians) // 2)
+        left, right = [], []
+        for num in arr:
+            if num < pivot:
+                left.append(num)
+            elif num > pivot:
+                right.append(num)
+        if k - 1 < len(left):
+            return select(left, 0, len(left) - 1, k - 1)
+        elif k - 1 == len(left):
+            return pivot
+        else:
+            return select(right, 0, len(right) - 1, k - len(left) - 1)
+    else:
+        return None
+
+# Test Cases
+arr1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+k1 = 6
+print(median_of_medians(arr1, k1))  # Output: 6
+
+arr2 = [23, 17, 31, 44, 55, 21, 20, 18, 19, 27]
+k2 = 5
+print(median_of_medians(arr2, k2))  # Output: 21
